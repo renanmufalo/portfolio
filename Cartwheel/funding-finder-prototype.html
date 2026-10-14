@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Funding Finder · How districts pay for Cartwheel</title>
+<meta name="description" content="Pick your state and see how school districts fund Cartwheel: state programs, grants, Medicaid and insurance billing.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2a3a;--ink-2:#4a5868;--muted:#7b8794;--cream:#fbf7f1;--card:#fff;--line:#e8e1d6;--coral:#e8664a;--coral-2:#fde9e3;--teal:#1f7a74;--teal-2:#e2f2ef;--sun:#f3b63f;--sun-2:#fdf1d8;--hood:#2b2350;--r:18px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.15;margin:0}
+button,input,select{font:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.concept{background:var(--hood);color:#fff;font-size:14px}
+.concept .wrap{padding-top:10px;padding-bottom:10px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.concept span{opacity:.75}
+header{padding:56px 0 28px}
+.eyebrow{display:inline-block;background:var(--teal-2);color:var(--teal);font-weight:600;font-size:13px;padding:6px 12px;border-radius:999px;margin-bottom:16px}
+header h1{font-size:clamp(32px,4.6vw,50px);max-width:16em}
+header p{font-size:19px;color:var(--ink-2);max-width:38em;margin:16px 0 0}
+
+.base{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0 8px}
+.base div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.base b{display:block;font-family:Fraunces,serif;font-size:30px;color:var(--teal);font-weight:600}
+.base span{color:var(--ink-2);font-size:15px}
+
+.picker{margin:36px 0 18px}
+.picker h2{font-size:26px;margin-bottom:14px}
+.states{display:flex;flex-wrap:wrap;gap:10px}
+.st{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:10px 18px;font-weight:500;cursor:pointer}
+.st[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.st small{color:var(--muted);margin-left:6px}
+.st[aria-pressed="true"] small{color:#c9d2dc}
+select.other{border:1.5px dashed var(--line);background:transparent;border-radius:999px;padding:10px 16px;color:var(--ink-2)}
+
+.result{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin:22px 0 48px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:28px}
+.status{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;padding:5px 12px;border-radius:999px;margin-bottom:14px}
+.status.ok{background:var(--teal-2);color:var(--teal)}
+.status.warn{background:var(--sun-2);color:#8a5a00}
+.status.base{background:#eef1f4;color:var(--ink-2)}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.result h3{font-size:30px;margin-bottom:8px}
+.lead{color:var(--ink-2);font-size:17px;margin:0 0 20px}
+.prog{border-top:1px solid var(--line);padding:16px 0}
+.prog:last-of-type{border-bottom:1px solid var(--line)}
+.prog .k{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.prog .n{font-weight:600;font-size:17px;margin:2px 0}
+.prog p{margin:0;color:var(--ink-2);font-size:15px}
+.src{font-size:13px;color:var(--muted);margin-top:16px}
+.cta{display:inline-block;margin-top:20px;background:var(--coral);color:#fff;border-radius:999px;padding:13px 22px;font-weight:600;text-decoration:none}
+
+.side{display:flex;flex-direction:column;gap:18px}
+.calc label{display:block;font-weight:600;margin-bottom:6px}
+.calc input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--cream);font-size:18px}
+.calc .out{font-family:Fraunces,serif;font-size:40px;color:var(--teal);margin:14px 0 2px}
+.calc small{color:var(--muted)}
+.partners b{font-family:Fraunces,serif;font-size:44px;color:var(--coral);display:block;line-height:1.1}
+.partners ul{margin:10px 0 0;padding-left:18px;color:var(--ink-2);font-size:14px;columns:2;column-gap:18px}
+.split{display:flex;height:14px;border-radius:999px;overflow:hidden;margin:12px 0 8px}
+.split i:first-child{background:var(--teal);flex:2}
+.split i:last-child{background:var(--sun);flex:1}
+.legend{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2)}
+
+.note{background:var(--coral-2);border-radius:14px;padding:16px 20px;font-size:14.5px;margin-bottom:60px;color:#7a2e1c}
+@media (max-width:820px){.result,.base{grid-template-columns:1fr}.partners ul{columns:1}}
+</style>
+</head>
+<body>
+<div class="concept"><div class="wrap"><b>Concept · Funding Finder</b><span>Prototype built from cartwheel.org state pages, Oct 14 2026. To be validated by Cartwheel before any launch.</span></div></div>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">For district and state leaders</span>
+  <h1>How would your district pay for student mental health care?</h1>
+  <p>Pick your state. See the programs that fund Cartwheel there, what insurance covers, and which districts nearby already use it.</p>
+  <div class="base">
+    <div><b>~2/3</b><span>of the cost covered by health insurance, billed by Cartwheel</span></div>
+    <div><b>$0</b><span>out of pocket for families on Medicaid or uninsured</span></div>
+    <div><b>~1/3</b><span>covered by the district, often through state or partner funding</span></div>
+  </div>
+</header>
+
+<section class="picker">
+  <h2>Choose your state</h2>
+  <div class="states" id="states"></div>
+</section>
+
+<section class="result" id="result" aria-live="polite"></section>
+
+<div class="note"><b>Prototype note for Cartwheel's team.</b> Every program, amount and status on this page is taken from Cartwheel's own state pages and press releases as published on Oct 14 2026, cited per state. Partner lists combine the logos on each state page with district pages in the site's /district/ collection; where a state page shows no names, the state was matched from the district's name and should be checked. In production each state is one CMS item, so the team updates a program or status in Webflow and every page that uses it changes at once.</div>
+</div>
+
+<script>
+const BASE = {
+  name:"Base model",
+  partners:[],
+  programs:[
+    ["Insurance billing","Medicaid and private insurance","Cartwheel bills insurance for care. Families on Medicaid or without insurance pay nothing; privately insured families use Cartwheel in network."],
+    ["District share","Covers what insurance does not","Collaboration with school staff, case management and parent education are paid by the district, about a third of the total."]
+  ],
+  src:"cartwheel.org/for-schools"
+};
+const S = {
+  GA:{name:"Georgia",status:["ok","Funding available"],head:"No cost to the district",lead:"Georgia's HB 68 gives every public middle and high school dedicated mental health funding, with no match and no competitive application.",
+    programs:[["State grant","HB 68 mental health grant","$20,000 for every public middle and high school. No match required, no competitive application."],
+      ["State partner","Georgia DOE approved vendor","Cartwheel was named an approved vendor by the Georgia Department of Education for student mental telehealth services."],
+      ["Insurance","Georgia Medicaid and most private plans","Plus a Cartwheel fund for uninsured and underinsured students."]],
+    calc:{label:"Middle and high schools in your district",per:20000,note:"HB 68 at $20,000 per school"},
+    partners:["DeKalb County","Atlanta Public Schools","Catoosa County","Chickamauga City","Glascock County","Turner County","Bremen City","Clay County","Stewart County","Quitman County","Dooly County","Douglas County"],
+    src:"cartwheel.org/georgia; Georgia DOE approved-vendor press release, Sept 2025"},
+  IL:{name:"Illinois",status:["ok","Grant open to new districts"],head:"A $1M grant for new Illinois districts",lead:"Blue Cross and Blue Shield of Illinois funds Cartwheel's expansion to up to 100,000 K-12 students through 2028, focused on rural and underserved communities.",
+    programs:[["Partner grant","BCBSIL $1M grant","Expands access through 2028, with 30 to 50 more districts planned. Grant funding is available for new Illinois districts."],
+      ["Insurance","Illinois Medicaid and major private plans","Including Blue Cross Community Health Plans, CountyCare, Meridian, Molina and YouthCare."]],
+    partners:["Peoria Public Schools","Decatur SD 61","Bloomington SD 87","Belleville THSD 201","East St. Louis SD 189","Edwardsville CUSD 7","Granite City CUSD 9","Leyden CHSD 212","Steger SD 194","Troy CCSD 30-C","Mattoon CUSD 2","Litchfield CUSD 12","Panhandle CUSD 2","Wolf Branch SD 113","CCSD 59","CHSD 230","Collinsville CUSD 10","Triad CUSD 2","North Shore SD 112"],
+    src:"cartwheel.org/illinois; BCBSIL press release, Aug 2026"},
+  IN:{name:"Indiana",status:["ok","Grant funded"],head:"Anthem-backed access for 12,500 students",lead:"A $250,000 grant from Anthem supports Cartwheel's expansion to up to 12,500 K-12 students across Indiana.",
+    programs:[["Partner grant","Anthem $250,000 grant","Supports expanding telehealth mental health services to up to 12,500 students."],
+      ["Insurance","Indiana Medicaid and private plans","Cartwheel bills insurance directly."]],
+    partners:["Greensburg Community Schools","Carmel Clay Schools","Noblesville Schools","School City of Mishawaka","LaPorte Community Schools","School Town of Munster","Mount Vernon Community Schools","Northeastern Wayne Schools"],
+    src:"Cartwheel + Anthem press release, Sept 22 2026"},
+  PA:{name:"Pennsylvania",status:["ok","Grant support offered"],head:"PCCD-eligible, with help applying",lead:"Cartwheel's services qualify for Pennsylvania Commission on Crime and Delinquency funding, and Cartwheel helps districts complete the application.",
+    programs:[["State grant","PCCD school safety and mental health funding","Services are PCCD-eligible behavioral health services. Cartwheel supports the grant application."],
+      ["Insurance","Medicaid and private insurance","Accepted for all students, regardless of insurance status."]],
+    partners:["Allentown SD","State College Area SD","Cumberland Valley SD","Carlisle Area SD","Derry Township SD","East Stroudsburg Area SD","Garnet Valley SD","Hollidaysburg Area SD","Lewisburg Area SD","Panther Valley SD","Susquehanna Township SD","Tyrone Area SD","Bellefonte Area SD","Bald Eagle Area SD","Penn Cambria SD","Mifflinburg Area SD"],
+    src:"cartwheel.org/pennsylvania"},
+  NY:{name:"New York",status:["ok","State aidable"],head:"State aid through BOCES",lead:"Cartwheel is available through BOCES CoSer agreements, which makes the service state aidable for New York districts.",
+    programs:[["State aid","BOCES CoSer agreements","Districts contract through their BOCES; the service qualifies for state aid."],
+      ["Insurance","New York Medicaid and most private plans","Including Fidelis, Healthfirst, EmblemHealth, MVP and CDPHP."]],
+    partners:["Albany City SD","Schenectady City SD","Glens Falls City SD","Hudson City SD","Greater Amsterdam SD","Brewster CSD","Cobleskill-Richmondville CSD","Manchester-Shortsville CSD","Port Chester-Rye UFSD","Rush-Henrietta CSD","Sewanhaka CHSD","Wappingers CSD"],
+    src:"cartwheel.org/new-york"},
+  MA:{name:"Massachusetts",status:["ok","Multiple options"],head:"Several funding paths for Massachusetts districts",lead:"Cartwheel's Massachusetts page notes multiple funding options; its resource library covers opioid settlement funds for school districts.",
+    programs:[["Settlement funds","Opioid settlement funding","Cartwheel publishes guidance on using opioid settlement funds for school mental health in Massachusetts."],
+      ["Insurance","MassHealth and most private plans","Including BCBS of Massachusetts, Harvard Pilgrim, Tufts, Mass General Brigham, WellSense and Fallon."]],
+    partners:["Boston Public Schools","Lowell","Salem","Springfield","Fall River","Haverhill","Fitchburg","Pittsfield","Marlborough","Arlington","Acton-Boxborough","Concord-Carlisle","Bedford","Beverly","Holliston","Hudson","Westford","Medway","Chelsea","Danvers"],
+    src:"cartwheel.org/massachusetts; Cartwheel resource on MA opioid settlement funding"},
+  WV:{name:"West Virginia",status:["ok","State funded"],head:"State-funded for rural counties",lead:"Through West Virginia's Rural Health Transformation Program, the Department of Health awarded Cartwheel $1.945M to serve districts in the state's rural counties.",
+    programs:[["State program","Rural Health Transformation Program","$1.945M award to Cartwheel. Open to all school districts in West Virginia's rural counties."],
+      ["Insurance","Medicaid and private insurance","Cartwheel bills insurance directly."]],
+    partners:[],
+    src:"cartwheel.org/west-virginia"},
+  AZ:{name:"Arizona",status:["warn","Program ended July 2026"],head:"State program paused, insurance model available",lead:"The Arizona Department of Education partnership for rural schools ended July 1, 2026 for lack of funding. Cartwheel is pursuing other funding; districts can still partner on the insurance model.",
+    programs:[["State program","ADE rural telehealth partnership","Ended July 1, 2026. Cartwheel says it is pursuing funding to resume."],
+      ["County partner","Maricopa County","Maricopa County partnered with Cartwheel to provide telehealth for up to 50,000 students."],
+      ["Insurance","AHCCCS Medicaid, private insurance and TRICARE","Cartwheel bills insurance directly."]],
+    partners:["Phoenix Elementary","Alhambra Elementary","Roosevelt Elementary","Glendale ESD 40","Yuma ESD One","Gila Bend Unified","Page Unified","St. Johns Unified","Morenci Unified"],
+    src:"cartwheel.org/arizona; Maricopa County press coverage, May 2026"}
+};
+const OTHER = ["Colorado","Connecticut","Nevada","New Hampshire","North Carolina","Ohio","Rhode Island","Virginia","Wisconsin","Another state"];
+
+let cur="GA";
+const $=s=>document.querySelector(s);
+function chips(){
+  $("#states").innerHTML = Object.entries(S).map(([k,v])=>`<button class="st" data-k="${k}" aria-pressed="${k===cur}">${v.name}<small>${v.partners.length||""}</small></button>`).join("")
+    + `<select class="other" id="other" aria-label="Other states"><option value="">Other states…</option>${OTHER.map(o=>`<option>${o}</option>`).join("")}</select>`;
+  document.querySelectorAll(".st").forEach(b=>b.onclick=()=>{cur=b.dataset.k;render()});
+  $("#other").onchange=e=>{if(e.target.value){cur="__"+e.target.value;render()}};
+}
+function render(){
+  chips();
+  const isOther=cur.startsWith("__");
+  const d = isOther ? {...BASE,name:cur.slice(2),status:["base","Base model"],head:"The insurance model works in every state",lead:"There is no state page for "+cur.slice(2)+" yet. The base model still applies: insurance covers most of the cost and families on Medicaid pay nothing."} : S[cur];
+  if(isOther) $("#other").value=cur.slice(2);
+  const progs=d.programs.map(p=>`<div class="prog"><div class="k">${p[0]}</div><div class="n">${p[1]}</div><p>${p[2]}</p></div>`).join("");
+  const calc = d.calc ? `<div class="panel calc"><label for="n">${d.calc.label}</label><input id="n" type="number" min="0" value="4"><div class="out" id="out"></div><small>${d.calc.note}. Your district's figure, from the state's own formula.</small></div>` : "";
+  const partners = d.partners && d.partners.length ? `<div class="panel partners"><b>${d.partners.length}</b>${d.name} districts named on cartwheel.org<ul>${d.partners.map(p=>`<li>${p}</li>`).join("")}</ul></div>`
+    : `<div class="panel partners"><b>—</b>${isOther?"No "+d.name+" page yet. A state page is where local funding, partners and proof would live.":"Partner districts are not named on this state page yet."}</div>`;
+  const split = `<div class="panel"><div class="k" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">How the cost splits</div><div class="split"><i></i><i></i></div><div class="legend"><span>Insurance ~2/3</span><span>District ~1/3</span></div></div>`;
+  $("#result").innerHTML = `<div class="panel"><span class="status ${d.status[0]}">${d.status[1]}</span><h3>${d.head}</h3><p class="lead">${d.lead}</p>${progs}<a class="cta" href="#">Talk to us about ${d.name} funding →</a><div class="src">Source: ${d.src||BASE.src}</div></div><div class="side">${calc}${partners}${split}</div>`;
+  if(d.calc){const f=()=>{$("#out").textContent="$"+(Math.max(0,+$("#n").value||0)*d.calc.per).toLocaleString("en-US")};$("#n").oninput=f;f();}
+}
+render();
+</script>
+</body>
+</html>
